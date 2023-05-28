@@ -41,7 +41,8 @@ function getdriverById($id)
             $statement->bind_result($id, $kidsdrive, $dob, $age, $homekids, $yoj, $income, $parent, $home_val, $mstatus, $gender, $education, $occupation, $travtime, $car_use, $bluebook, $tif, $car_type, $red_car, $oldclaim, $clm_freq, $revoked, $mvr_pts, $clm_amt, $car_age, $claim_flag, $urbanicity);
             if ($statement->fetch())
             {
-                return new driver($id, $kidsdrive, $dob, $age, $homekids, $yoj, $income, $parent, $home_val, $mstatus, $gender, $education, $occupation, $travtime, $car_use, $bluebook, $tif, $car_type, $red_car, $oldclaim, $clm_freq, $revoked, $mvr_pts, $clm_amt, $car_age, $claim_flag, $urbanicity);
+                $drivers[] = new driver($id, $kidsdrive, $dob, $age, $homekids, $yoj, $income, $parent, $home_val, $mstatus, $gender, $education, $occupation, $travtime, $car_use, $bluebook, $tif, $car_type, $red_car, $oldclaim, $clm_freq, $revoked, $mvr_pts, $clm_amt, $car_age, $claim_flag, $urbanicity);
+                return $drivers;
             }
             else
             {
