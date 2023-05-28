@@ -92,7 +92,8 @@ class DriverRestService extends RestService
 
     public function performDelete($url, $requestLocation, $requestBody, $accept, $parameters) 
     {
-		if (count($parameters) == 2)
+		
+		if (count($requestLocation) == 2)
 		{
 			$result = deleteDriver($url, $requestLocation, $requestBody, $accept);
 

@@ -8,26 +8,22 @@
 
 function getAllDrivers()
 {
-
-    var loadingHTML = 
-    "<div id='loadingContainer'><img src='/Images/throbber.gif' width='100' height='100' ><br><br>"
-    
-    + "<p class='loadingtext'>LOADING...<br></p></div>";
-
-
-    $("#allbooks").html(loadingHTML);
-    $.ajax({
-        url: '/drivers',
-        type: 'GET',
-        cache: false,
-        dataType: 'json',
-        success: function (data) {
-            createDriverTable(data);
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            alert(jqXHR + '\n' + textStatus + '\n' + errorThrown);
-        }
-    });
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            $.ajax({
+                url: '/drivers',
+                type: 'GET',
+                cache: false,
+                dataType: 'json',
+                success: function (data) {
+                    resolve(data);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert(jqXHR + '\n' + textStatus + '\n' + errorThrown);
+                }
+            });
+        }, 2000);
+      });
 }
 
 function addDriver()
@@ -168,9 +164,12 @@ function deleteDriver(bookId)
 }
 
 
-function createDriverTable(books)
+async function createDriverTable()
 {
+    var loadingHTML = "<div id='loadingContainer'><img src='/Images/throbber.gif' width='100' height='100' ><br><br><p class='loadingtext'>LOADING...<br></p></div>";
+    $("#allbooks").html(loadingHTML);
 
+    books = await getAllDrivers();
     
     var strResult = '<div class="col-md-12">' + 
                     '<table  id="driverTable" class="table table-bordered table-hover">' +
@@ -362,16 +361,6 @@ function createEditBookForm(book)
 
 }
 
-function someFunction(){
-    alert("some function");
-    console.log("some function");
-}
-
-function testModal(){
-    runModal("title", "body", "buttonText", "alert('ALERRRRRT!!!!!!!')");
-}
-
-
 function runModal(title, body, buttonText, buttonFunction){
 
 
@@ -381,7 +370,6 @@ function runModal(title, body, buttonText, buttonFunction){
     $("#ModalConfirmButton").attr("onclick", buttonFunction);
     $("#ModalConfirmButton").text(buttonText);
 
-    //$('#Modal').modal();
     $('#Modal').modal('show')
 
 
