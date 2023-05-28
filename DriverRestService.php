@@ -45,16 +45,6 @@ class DriverRestService extends RestService
 					$this->notFoundResponse();
 				}
 				break;
-
-			case 4:
-				$year = $requestLocation[1];
-				$month = $requestLocation[2];
-				$day = $requestLocation[3];
-				header('Content-Type: application/json; charset=utf-8');
-				header('no-cache,no-store');
-				$this->getdriversByDate($year, $month, $day);
-				echo json_encode($this->drivers);
-				break;
 				
 			default:	
 				$this->methodNotAllowedResponse();
@@ -106,6 +96,11 @@ class DriverRestService extends RestService
 				$this->errorResponse($result);
 			}
 		}
+		else
+		{
+			$this->methodNotAllowedResponse();
+		}
+		
     }
 
 	 

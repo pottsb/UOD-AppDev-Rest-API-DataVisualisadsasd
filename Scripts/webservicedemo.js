@@ -26,6 +26,37 @@ function getAllDrivers()
       });
 }
 
+function editDriver(bookId)
+{
+    $.ajax({
+        url: '/drivers/' + bookId,
+        type: 'GET',
+        cache: false,
+        dataType: 'json',
+        success: function (data) {
+            createEditDriverForm(data);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert(jqXHR + '\n' + textStatus + '\n' + errorThrown);
+        }
+    });
+}
+
+function deleteDriver(bookId)
+{
+    $.ajax({
+        url: '/drivers/' + bookId,
+        type: 'DELETE',
+        dataType: 'json',
+        success: function (data) {
+            $(`#driverTable tbody tr:contains('${bookId}')`).remove();
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert(jqXHR + '\n' + textStatus + '\n' + errorThrown);
+        }
+    });
+}
+
 function addDriver()
 {
     var DOB = new Date($('#DOBdateyear').val(), $('#DOBdatemonth').val() - 1, $('#DOBdateday').val()).toISOString().slice(0, 19).replace('T', ' ');
@@ -75,28 +106,9 @@ function addDriver()
 
 }
 
-
-
-
 function cancelChangeBook()
 {
     $("#newbookform").html("");
-}
-
-function editDriver(bookId)
-{
-    $.ajax({
-        url: '/drivers/' + bookId,
-        type: 'GET',
-        cache: false,
-        dataType: 'json',
-        success: function (data) {
-            createEditDriverForm(data);
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            alert(jqXHR + '\n' + textStatus + '\n' + errorThrown);
-        }
-    });
 }
 
 function editDriverkValues(bookId)
@@ -146,21 +158,6 @@ function editDriverkValues(bookId)
     });
     $("#newbookform").html("");
 
-}
-
-function deleteDriver(bookId)
-{
-    $.ajax({
-        url: '/drivers/' + bookId,
-        type: 'DELETE',
-        dataType: 'json',
-        success: function (data) {
-            $(`#driverTable tbody tr:contains('${bookId}')`).remove();
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            alert(jqXHR + '\n' + textStatus + '\n' + errorThrown);
-        }
-    });
 }
 
 
