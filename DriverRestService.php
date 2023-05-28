@@ -24,13 +24,13 @@ class DriverRestService extends RestService
 			case 1:
 				header('Content-Type: application/json; charset=utf-8');
 				header('no-cache,no-store');
-				$this->getAlldrivers();
-				echo json_encode($this->drivers);
+				$drivers = getAlldrivers();
+				echo json_encode($drivers);
 				break;
 
 			case 2:
 				$id = $parameters[1];
-				$driver = $this->getdriverById($id);
+				$driver = getdriverById($id);
 				if ($driver != null)
 				{
 					header('Content-Type: application/json; charset=utf-8');
