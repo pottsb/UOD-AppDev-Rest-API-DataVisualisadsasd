@@ -75,10 +75,12 @@ class RestService
 		//
 		if (isset($_GET['q']))
 		{
-			$parameters = explode("/", $_GET['q']);
-			if (strlen($this->apiStringToMatch) > 0 && count($parameters) > 0)
+			$requestLocation = explode("/", $_GET['q']);
+			$parameters = $_GET;
+			unset($parameters['q']);
+			if (strlen($this->apiStringToMatch) > 0 && count($requestLocation) > 0)
 			{
-				if (strcmp($this->apiStringToMatch, $parameters[0]) != 0)
+				if (strcmp($this->apiStringToMatch, $requestLocation[0]) != 0)
 				{
 					$this->notImplementedResponse();
 					return;
@@ -97,7 +99,7 @@ class RestService
 		{
 		  $accept = "";
 		}
-		$this->handleRequest($url, $method, $parameters, $requestBody, $accept);
+		$this->handleRequest($url, $method, $requestLocation, $requestBody, $accept, $parameters);
     }
 
     protected function getFullUrl() 
@@ -114,21 +116,21 @@ class RestService
 		return $protocol.'://'.$_SERVER['HTTP_HOST'].$location;
     }
 
-    public function handleRequest($url, $method, $parameters, $requestBody, $accept) 
+    public function handleRequest($url, $method, $requestLocation, $requestBody, $accept, $parameters) 
     {
 		switch($method) 
 		{
 		  case 'GET':
-			$this->performGet($url, $parameters, $requestBody, $accept);
+			$this->performGet($url, $requestLocation, $requestBody, $accept, $parameters);
 			break;
 		  case 'POST':
-			$this->performPost($url, $parameters, $requestBody, $accept);
+			$this->performPost($url, $requestLocation, $requestBody, $accept, $parameters);
 			break;
 		  case 'PUT':
-			$this->performPut($url, $parameters, $requestBody, $accept);
+			$this->performPut(requestLocation);
 			break;
 		  case 'DELETE':
-			$this->performDelete($url, $parameters, $requestBody, $accept);
+			$this->performDelete($url, $requestLocation, $requestBody, $accept, $parameters);
 			break;
 		  default:
 			$this->notImplementedResponse();
@@ -165,22 +167,22 @@ class RestService
 
 	// Override the following methods to provide the appropriate functionality
 	
-	public function performGet($url, $parameters, $requestBody, $accept) 
+	public function performGet($url, $requestLocation, $requestBody, $accept, $parameters) 
 	{
 		$this->methodNotAllowedResponse();
 	}
 
-	public function performPost($url, $parameters, $requestBody, $accept) 
+	public function performPost($url, $requestLocation, $requestBody, $accept, $parameters) 
 	{
 		$this->methodNotAllowedResponse();
 	}
 
-	public function performPut($url, $parameters, $requestBody, $accept) 
+	public function performPut($url, $requestLocation, $requestBody, $accept, $parameters) 
 	{
 		$this->methodNotAllowedResponse();
 	}
 
-	public function performDelete($url, $parameters, $requestBody, $accept) 
+	public function performDelete($url, $requestLocation, $requestBody, $accept, $parameters) 
 	{
 		$this->methodNotAllowedResponse();
 	}

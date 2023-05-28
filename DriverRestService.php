@@ -7,6 +7,7 @@
 	require "Operations/Post.php";
 	require "Operations/Put.php";
 	require 'Helpers/ExtractDriverFromJSON.php';
+	require 'Helpers/Filter.php';
  
 class DriverRestService extends RestService 
 {
@@ -17,25 +18,27 @@ class DriverRestService extends RestService
 		parent::__construct("drivers");
 	}
 
-	public function performGet($url, $parameters, $requestBody, $accept) 
+	public function performGet($url, $requestLocation, $requestBody, $accept, $parameters) 
 	{
-		switch (count($parameters))
+		switch (count($requestLocation))
 		{
 			case 1:
 				header('Content-Type: application/json; charset=utf-8');
 				header('no-cache,no-store');
 				$drivers = getAlldrivers();
-				echo json_encode($drivers);
+				$filteredResults = filterResults($parameters, $drivers);
+				echo json_encode($filteredResults);
 				break;
 
 			case 2:
-				$id = $parameters[1];
+				$id = $requestLocation[1];
 				$driver = getdriverById($id);
 				if ($driver != null)
 				{
 					header('Content-Type: application/json; charset=utf-8');
 					header('no-cache,no-store');
-					echo json_encode($driver);
+					$filteredResults = filterResults($parameters, $driver);
+					echo json_encode($filteredResults);
 				}
 				else
 				{
@@ -44,9 +47,9 @@ class DriverRestService extends RestService
 				break;
 
 			case 4:
-				$year = $parameters[1];
-				$month = $parameters[2];
-				$day = $parameters[3];
+				$year = $requestLocation[1];
+				$month = $requestLocation[2];
+				$day = $requestLocation[3];
 				header('Content-Type: application/json; charset=utf-8');
 				header('no-cache,no-store');
 				$this->getdriversByDate($year, $month, $day);
@@ -58,9 +61,9 @@ class DriverRestService extends RestService
 		}
 	}
 
-	public function performPost($url, $parameters, $requestBody, $accept) 
+	public function performPost($url, $requestLocation, $requestBody, $accept, $parameters) 
 	{
-		$result = createDriver($url, $parameters, $requestBody, $accept);
+		$result = createDriver($url, $requestLocation, $requestBody, $accept);
 
 		if ($result == TRUE)
 		{
@@ -72,9 +75,9 @@ class DriverRestService extends RestService
 		}
 	}
 
-	public function performPut($url, $parameters, $requestBody, $accept) 
+	public function performPut($url, $requestLocation, $requestBody, $accept, $parameters) 
 	{
-		$result = updateDriver($url, $parameters, $requestBody, $accept);
+		$result = updateDriver($url, $requestLocation, $requestBody, $accept);
 
 		if ($result == TRUE)
 		{
@@ -87,11 +90,11 @@ class DriverRestService extends RestService
 	}
 	
 
-    public function performDelete($url, $parameters, $requestBody, $accept) 
+    public function performDelete($url, $requestLocation, $requestBody, $accept, $parameters) 
     {
 		if (count($parameters) == 2)
 		{
-			$result = deleteDriver($url, $parameters, $requestBody, $accept);
+			$result = deleteDriver($url, $requestLocation, $requestBody, $accept);
 
 			if ($result == TRUE)
 			{
