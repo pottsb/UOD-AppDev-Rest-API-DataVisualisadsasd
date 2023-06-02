@@ -9,9 +9,9 @@
     <script src="Scripts/manageCharts.js"></script>
     <link href="Content/bootstrap.min.css" rel="stylesheet" />
     <script src="Scripts/bootstrap.min.js"></script>
-    <link href="Content/Site.css" rel="stylesheet" />
     <script src="Scripts/modernizr-2.6.2.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="Content/Site.css" rel="stylesheet" />
 
 
     <link rel="stylesheet" media="all" href="https://s3.amazonaws.com/dynatable-docs-assets/css/jquery.dynatable.css" />
@@ -23,11 +23,123 @@
             <div class="navbar-header">
                 <a class="navbar-brand" href="/">Web Service Example</a>
             </div>
+            
         </div>
-    </div>
-    <div class="container body-content">
+        
+        <div class="filtersColContainer">
+                <input type="button" value="Apply Filters" class="btn btn-sm btn-primary" onclick="updateCharts()" />
+                <label for="inputGender">Gender:</label>
+                <select name="inputGender" id="inputGender">
+                    <option value="unset">Any</option>
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
+                  </select>
 
-        <canvas id="myChart" width="400" height="400"></canvas>
+                <label for="inputRedCar">Red Cars:</label>
+                <select name="inputRedCar" id="inputRedCar">
+                    <option value="unset">Any</option>
+                    <option value="Yes">Only Red Cars</option>
+                    <option value="No">Exclude Red Cars</option>
+                </select>
+
+                <label for="inputMarried">Marital Status:</label>
+                <select name="inputMarried" id="inputMarried">
+                    <option value="unset">Any</option>
+                    <option value="Yes">Married</option>
+                    <option value="No">Single</option>
+                </select>
+
+                <label for="inputEducation">Education:</label>
+                <select name="inputEducation" id="inputEducation">
+                    <option value="unset">Any</option>
+                    <option value="High School">High School</option>
+                    <option value="PhD">PhD</option>
+                    <option value="Bachelors">Bachelors</option>
+                    <option value="Masters">Masters</option>
+                </select>
+
+                <label for="inputCarType">Car Type:</label>
+                <select name="inputCarType" id="inputCarType">
+                    <option value="unset">Any</option>
+                    <option value="Pickup">Pickup</option>
+                    <option value="Minivan">Minivan</option>
+                    <option value="SUV">SUV</option>
+                    <option value="Sports Car">Sports Car</option>
+                    <option value="Van">Van</option>
+                    <option value="Panel Truck">Panel Truck</option>
+                </select>
+
+                <label for="inputParent">Parent:</label>
+                <select name="inputParent" id="inputParent">
+                    <option value="unset">Any</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+
+
+                <label for="inputClaim">Made Claim:</label>
+                <select name="inputClaim" id="inputClaim">
+                    <option value="unset">Any</option>
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>
+
+                <label id="resultCount">Results Returned: 0</label>
+            </div>
+            
+    </div>
+    
+    <div class=" body-content">
+        <div class="contentColContainer ">
+            <div class="contentCollumn3  productcol vcenter red">
+                <canvas class="hcenter chartCanvas" id="professionsChart"></canvas>
+            </div>
+            <div class="contentCollumn3 productcol green">
+                <canvas class="hcenter chartCanvas" id="homeKidsChart"></canvas>
+            </div>
+            <div class="contentCollumn3  productcol vcenter red">
+                <canvas class="hcenter chartCanvas" id="kidsDriveChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="contentColContainer">
+            <div class="contentCollumn2 productcol green">
+                <canvas class="hcenter chartCanvas" id="ageChart"></canvas>
+            </div>
+            <div class="contentCollumn2 productcol red">
+                <canvas class="hcenter chartCanvas" id="penaltyPointChart"></canvas>
+            </div>
+        </div>	
+        <div class="contentColContainer ">
+            <div class="contentCollumn3  productcol vcenter red">
+                <canvas class="hcenter chartCanvas" id="carTypeChart"></canvas>
+            </div>
+            <div class="contentCollumn3 productcol green">
+                <canvas class="hcenter chartCanvas" id="carUseChart"></canvas>
+            </div>
+            <div class="contentCollumn3  productcol vcenter red">
+                <canvas class="hcenter chartCanvas" id="urbanCityChart"></canvas>
+            </div>
+        </div>
+        <div class="contentColContainer">
+            <div class="contentCollumn2 productcol green">
+                <canvas class="hcenter chartCanvas" id="scatterChart"></canvas>
+            </div>
+            <div class="contentCollumn2 productcol red">
+                <canvas class="hcenter chartCanvas" id="carAgeChart"></canvas>
+            </div>
+        </div>
+        <div class="contentColContainer ">
+            <div class="contentCollumn3  productcol vcenter red">
+                
+            </div>
+            <div class="contentCollumn3 productcol green">
+                <canvas class="hcenter chartCanvas" id="claimFrequencyChart"></canvas>
+            </div>
+            <div class="contentCollumn3  productcol vcenter red">
+                <canvas class="hcenter chartCanvas" id="revokedChart"></canvas>
+            </div>
+        </div>
         
        <script>
         renderCharts();

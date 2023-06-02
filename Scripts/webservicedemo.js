@@ -360,8 +360,6 @@ function createEditBookForm(book)
 
 function runModal(title, body, buttonText, buttonFunction){
 
-
-    console.log("runModal");
     $('#ModalLabel').text(title); 
     $('#ModalBody').text(body);
     $("#ModalConfirmButton").attr("onclick", buttonFunction);

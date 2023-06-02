@@ -17,6 +17,7 @@ p.loadingtext {
 
 /* Set padding to keep content from hitting the edges */
 .body-content {
+    padding-top: 50px !important;
     padding-left: 15px !important;
     padding-right: 15px !important;
     margin-right: 15px !important; 
@@ -54,3 +55,64 @@ input[type="checkbox"].input-validation-error {
 .validation-summary-valid {
     display: none;
 }
+
+.productcol{
+	height:315px;
+}
+.vcenter{
+    padding-top:10%;
+  }
+
+.hcenter{
+    margin-left:auto;
+    margin-right:auto;
+}
+  
+.contentColContainer {
+	background-color: #f1f1f1;
+	width: 100%;
+    overflow:hidden;
+}
+
+.filtersColContainer {
+    padding: 15px 0 15px 15px;
+	background-color: #f1f1f1;
+	width: 100%;
+}
+
+.filtersColContainer label{
+    padding-left: 15px;
+}
+
+.contentCollumn3{
+	width: 33.33%;
+	float: left;
+	padding-top: 20px;
+	padding-left: 20px;
+	padding-right: 20px;
+	text-align: center;
+    height: 450px;
+}
+
+.contentCollumn2{
+	width: 50%;
+	min-height: 315px;
+	float: left;
+	position:relative;
+	text-align: center;
+}
+
+.red{
+    background-color:lightsalmon;
+}
+
+.green{
+    background-color:lightgreen;
+}
+
+.chartCanvas {
+    top: 0;
+    left: 0;
+    max-width: 100%;
+    height: 100%;
+  }

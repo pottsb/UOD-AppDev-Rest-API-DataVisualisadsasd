@@ -4,28 +4,39 @@
 function filterResults($parameters, $driverArray)
 {
 
-    #only return red cars
-    if(array_key_exists('red', $parameters) && $parameters['red'] == 'true'):
-        $driverArray = array_filter($driverArray, function($driver) {
-            return $driver->RedCar == 'Yes';
-        });
-    endif;
+    $supportedKeys = [
+        "Gender", 
+        "RedCar", 
+        "MStatus", 
+        "Education", 
+        "CarType",
+        "Parent",
+        "ClaimFlag"
+    ];
 
-    #filter by gender
-    if(array_key_exists('gender', $parameters) && $parameters['gender'] == 'm'):
-        $driverArray = array_filter($driverArray, function($driver) {
-            return $driver->Gender == 'M';
-        });
-    endif;
+    foreach ($supportedKeys as $value) {
+        if(array_key_exists($value, $parameters)) {
+            $driverArray = array_filter($driverArray, function($driver) use ($value, $parameters) {
+                return $driver->$value == $parameters[$value];
+            });
+        }
+    }
 
-    if(array_key_exists('gender', $parameters) && $parameters['gender'] == 'f'):
-        $driverArray = array_filter($driverArray, function($driver) {
-            return $driver->Gender == 'F';
-        });
-    endif;
+    return array_values($driverArray);
+}
 
+function getMetric($metric, $filteredResults){
 
-    return $driverArray;
+    foreach ($filteredResults as $key => &$driver) {
+        foreach (get_object_vars($driver) as $driverMetricKey => $value) {
+            if ($driverMetricKey !== $metric) {
+                unset($driver->$driverMetricKey);
+            }
+        }
+    }
+
+    return $filteredResults;
+    
 }
 
 ?>

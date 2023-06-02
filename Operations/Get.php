@@ -52,28 +52,3 @@ function getdriverById($id)
             $connection->close();
         }
     }	
-
-function getdriversByDate($year, $month, $day)
-    {
-        global $dbserver, $dbusername, $dbpassword, $dbdatabase;
-
-        $connection = new mysqli($dbserver, $dbusername, $dbpassword, $dbdatabase);
-        if (!$connection->connect_error)
-        {
-            $date = $year."-".$month."-".$day;
-            $query = "select id, title, author, genre, publishdate, description, price from drivers where publishdate >= ?";
-            $statement = $connection->prepare($query);
-            $statement->bind_param('s', $date);
-            $statement->execute();
-            $statement->store_result();
-            $statement->bind_result($id, $title, $author, $genre, $publishdate, $description, $price);
-            while ($statement->fetch())
-            {
-                $this->drivers[] = new driver($id, $title, $author, $genre, $publishdate, $description, $price);
-            }
-            $statement->close();
-            $connection->close();
-        }
-    }
-
-?>

@@ -8,7 +8,7 @@
 	require "Operations/Put.php";
 	require 'Helpers/ExtractDriverFromJSON.php';
 	require 'Helpers/Filter.php';
- 
+
 class DriverRestService extends RestService 
 {
 	private $drivers;
@@ -44,6 +44,16 @@ class DriverRestService extends RestService
 				{
 					$this->notFoundResponse();
 				}
+				break;
+
+			case 3:
+				$metric = $requestLocation[2];
+				header('Content-Type: application/json; charset=utf-8');
+				header('no-cache,no-store');
+				$drivers = getAlldrivers();
+				$filteredResults = filterResults($parameters, $drivers);
+				$prunedResults = getMetric($metric, $filteredResults);
+				echo json_encode($prunedResults);
 				break;
 				
 			default:	
