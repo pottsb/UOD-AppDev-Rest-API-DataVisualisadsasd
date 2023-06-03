@@ -186,7 +186,17 @@ async function renderCharts(){
     options: {
         scales: {
         y: {
-            beginAtZero: true
+            beginAtZero: true,
+            title: {
+                display: true,
+                text: 'Driver Count'
+                }
+        },
+        x:{
+            title: {
+                display: true,
+                text: 'Penalty Points'
+                }
         }
         }
     }
@@ -203,7 +213,17 @@ async function renderCharts(){
         options: {
             scales: {
             y: {
-                beginAtZero: true
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Driver Count'
+                    }
+            },
+            x:{
+                title: {
+                    display: true,
+                    text: 'Driver Age'
+                    }
             }
             }
         }
@@ -214,14 +234,25 @@ async function renderCharts(){
         type: 'bar',
         data: {
             datasets: [{
-            label: 'Car Age',
+            label: "null",
             borderWidth: 1
             }]
         },
         options: {
             scales: {
             y: {
-                beginAtZero: true
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Car Count'
+                    }
+            },
+
+            x:{
+                title: {
+                    display: true,
+                    text: 'Car Age'
+                    }
             }
             }
         }
