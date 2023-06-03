@@ -53,7 +53,17 @@ class DriverRestService extends RestService
 				$drivers = getAlldrivers();
 				$filteredResults = filterResults($parameters, $drivers);
 				$prunedResults = getMetric($metric, $filteredResults);
-				echo json_encode($prunedResults);
+				$formattedResults = formatChartData($metric,$prunedResults);
+				echo json_encode($formattedResults);
+				break;
+			
+			case 4:
+				$metric1 = $requestLocation[2];
+				$metric2 = $requestLocation[3];
+				$drivers = getAlldrivers();
+				$filteredResults = filterResults($parameters, $drivers);
+				$formattedResults = formatScatterData($filteredResults, $metric1, $metric2);
+				echo json_encode($formattedResults);
 				break;
 				
 			default:	

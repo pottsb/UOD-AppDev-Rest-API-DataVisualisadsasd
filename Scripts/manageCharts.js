@@ -1,12 +1,33 @@
 class ChartContainer {
-    constructor(name, config) {
+    constructor(name, metric, config) {
 
         this.name = name;
+        this.metric = metric;
         this.config = config;
-        this.data = data;
         this.chart;
         
         this.renderChart();
+    }
+
+
+    getChartData(filterstate, metricName){
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                $.ajax({
+                    url: '/drivers/metric/' + metricName,
+                    type: 'GET',
+                    data: filterstate,
+                    cache: false,
+                    dataType: 'json',
+                    success: function (data) {
+                        resolve(data);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert(jqXHR + '\n' + textStatus + '\n' + errorThrown);
+                    }
+                });
+            }, 2000);
+        });
     }
       
     renderChart(){
@@ -14,18 +35,24 @@ class ChartContainer {
         this.chart = new Chart(ctx, this.config);
     }
 
-    updateChart(labels, data){
+   async updateChart(){
+
+        let returnedData = await this.getChartData(getFilterState(), this.metric);
         
-        this.chart.data.labels = labels;
-        this.chart.data.datasets[0].data = data;
+        if (this.name === "scatterChart"){
+            this.chart.data.datasets[0].data = returnedData;
+        }else{
+            this.chart.data.labels = returnedData[0];
+            this.chart.data.datasets[0].data = returnedData[1];
+        }
         this.chart.update();
+
     }
 }
   
 
 
-function getAllDrivers(filterstate)
-{
+function getAllDrivers(filterstate){
     return new Promise((resolve) => {
         setTimeout(() => {
             $.ajax({
@@ -46,91 +73,25 @@ function getAllDrivers(filterstate)
 }
 
 
-function getMetric(drivers, metric)
-{
 
-    let keys = [];
-    let metricCount = [];
-    for(let i = 0; i < drivers.length; i++)
-    {
-        if(keys.includes(drivers[i][metric]))
-        {
-            let index = keys.indexOf(drivers[i][metric]);
-            metricCount[index]++;
-        }
-        else
-        {
-            keys.push(drivers[i][metric]);
-            metricCount.push(1);
-        }
-    }
-    return [keys, metricCount];
-}
-
-function getScatter(drivers,metric1,metric2)
-{
-
-    data = [];
-
-    for(let i = 0; i < drivers.length; i++)
-    {
-        let dataPoint = {};
-        dataPoint.x = drivers[i][metric1];
-        dataPoint.y = drivers[i][metric2];
-        dataPoint.r = 5;
-        data.push(dataPoint);
-    }
-
-
-    return data
-}
-
-
-function getFilterState(){
-
-    const supportedInputs = ["inputGender", 
-                            "inputRedCar", 
-                            "inputMarried", 
-                            "inputEducation", 
-                            "inputCarType", 
-                            "inputParent", 
-                            "inputClaim"]
-
-    let inputGender = document.getElementById('inputGender').value;
-    let inputRedCar = document.getElementById('inputRedCar').value;
-    let inputMarried = document.getElementById('inputMarried').value;
-    let inputEducation = document.getElementById('inputEducation').value;
-    let inputCarType = document.getElementById('inputCarType').value;
-    let inputParent = document.getElementById('inputParent').value;
-    let inputClaim = document.getElementById('inputClaim').value;
+function getFilterState() {
+    const inputMetrics = [
+        {inputId: "inputGender", metricKey: "Gender"}, 
+        {inputId: "inputRedCar", metricKey: "RedCar"}, 
+        {inputId: "inputMarried", metricKey: "MStatus"}, 
+        {inputId: "inputEducation", metricKey: "Education"}, 
+        {inputId: "inputCarType", metricKey: "CarType"}, 
+        {inputId: "inputParent", metricKey: "Parent"}, 
+        {inputId: "inputClaim", metricKey: "ClaimFlag"}
+    ];
 
     let filterState = {};
 
-    if (inputGender !== "unset"){
-        filterState.Gender = inputGender;
-    }
-    if (inputRedCar !== "unset"){
-        filterState.RedCar = inputRedCar;
-    }
-
-    if (inputMarried !== "unset"){
-        filterState.MStatus = inputMarried;
-    }
-
-    if (inputEducation !== "unset"){
-        filterState.Education = inputEducation;
-    }
-
-    if (inputCarType !== "unset"){
-        filterState.CarType = inputCarType;
-    }
-
-    if (inputParent !== "unset"){
-        filterState.Parent = inputParent;
-    }
-
-    if (inputClaim !== "unset"){
-        filterState.ClaimFlag = parseInt(inputClaim);
+    for (let i = 0; i < inputMetrics.length; i++) {
+        let input = document.getElementById(inputMetrics[i].inputId).value;
+        if (input != "unset"){
+            filterState[inputMetrics[i].metricKey] = input; 
+        }
     }
 
     return filterState;
@@ -140,39 +101,24 @@ let chartObject = [];
 
 async function renderCharts(){
 
-    filterstate = getFilterState();
-    data = await getAllDrivers(filterstate);
-    $("#resultCount").text("Results Returned: " + data.length + "");
-
-    let professions = getMetric(data, "Occupation");
-    let carType = getMetric(data, "CarType");
-    let MVRPoints = getMetric(data, "MVR_PTS");
-    let Age = getMetric(data, "Age");
-    let carUse = getMetric(data, "CarUse");
-    let homeKids = getMetric(data, "HomeKids");
-    let kidsDrive = getMetric(data, "KidsDrive");
-    let revoked = getMetric(data, "Revoked");
-    let carAge = getMetric(data, "CarAge");
-    let claimFrequency = getMetric(data, "ClaimFrequency");
-    let UrbanCity = getMetric(data, "UrbanCity");
-
-
-    let scatterData = getScatter(data, "BlueBook", "HomeValue"); //this modifies the base data :(
-
-
+    let chartColours = [
+        'rgb(255, 99, 132)',  // Red
+        'rgb(54, 162, 235)',  // Blue
+        'rgb(255, 205, 86)',  // Yellow
+        'rgb(201, 203, 207)',  // Grey
+        'rgb(64, 20, 64)',  // "Magenta"
+        'rgb(153, 102, 255)',  // Purple
+        'rgb(20, 128, 20)',  // Lime
+        'rgb(255, 159, 64)',  // Orange
+        'rgb(75, 192, 192)'  // Cyan
+    ];
 
     professionsChartConfig = {
         type: 'pie',
         data:  {
-            labels: professions[0],
             datasets: [{
             label: 'Count',
-            data: professions[1],
-            backgroundColor: [
-                'rgb(255, 99, 132)',
-                'rgb(54, 162, 235)',
-                'rgb(255, 205, 86)'
-            ],
+            backgroundColor: chartColours,
             hoverOffset: 4
             }]
         },
@@ -193,10 +139,8 @@ async function renderCharts(){
     penaltyPointConfiguration = {
     type: 'bar',
     data: {
-        labels: MVRPoints[0],
         datasets: [{
         label: 'Penalty Points',
-        data: MVRPoints[1],
         borderWidth: 1
         }]
     },
@@ -212,10 +156,8 @@ async function renderCharts(){
     ageChartConfiguration = {
         type: 'bar',
         data: {
-            labels: Age[0],
             datasets: [{
             label: 'Driver Age',
-            data: Age[1],
             borderWidth: 1
             }]
         },
@@ -232,10 +174,8 @@ async function renderCharts(){
     carAgeChartConfiguration = {
         type: 'bar',
         data: {
-            labels: carAge[0],
             datasets: [{
             label: 'Car Age',
-            data: carAge[1],
             borderWidth: 1
             }]
         },
@@ -251,15 +191,9 @@ async function renderCharts(){
     carTypeChartConfig = {
         type: 'pie',
         data:  {
-            labels: carType[0],
             datasets: [{
             label: 'Count',
-            data: carType[1],
-            backgroundColor: [
-                'rgb(255, 99, 132)',
-                'rgb(54, 162, 235)',
-                'rgb(255, 205, 86)'
-            ],
+            backgroundColor: chartColours,
             hoverOffset: 4
             }]
         },
@@ -280,15 +214,9 @@ async function renderCharts(){
     carUseChartConfig = {
         type: 'pie',
         data:  {
-            labels: carUse[0],
             datasets: [{
             label: 'Count',
-            data: carUse[1],
-            backgroundColor: [
-                'rgb(255, 99, 132)',
-                'rgb(54, 162, 235)',
-                'rgb(255, 205, 86)'
-            ],
+            backgroundColor: chartColours,
             hoverOffset: 4
             }]
         },
@@ -309,15 +237,9 @@ async function renderCharts(){
     homeKidsChartConfig = {
         type: 'pie',
         data:  {
-            labels: homeKids[0],
             datasets: [{
             label: 'Count',
-            data: homeKids[1],
-            backgroundColor: [
-                'rgb(255, 99, 132)',
-                'rgb(54, 162, 235)',
-                'rgb(255, 205, 86)'
-            ],
+            backgroundColor: chartColours,
             hoverOffset: 4
             }]
         },
@@ -338,15 +260,9 @@ async function renderCharts(){
     kidsDriveChartConfig = {
         type: 'pie',
         data:  {
-            labels: kidsDrive[0],
             datasets: [{
             label: 'Count',
-            data: kidsDrive[1],
-            backgroundColor: [
-                'rgb(255, 99, 132)',
-                'rgb(54, 162, 235)',
-                'rgb(255, 205, 86)'
-            ],
+            backgroundColor: chartColours,
             hoverOffset: 4
             }]
         },
@@ -367,15 +283,9 @@ async function renderCharts(){
     revokedChartConfig = {
         type: 'pie',
         data:  {
-            labels: revoked[0],
             datasets: [{
             label: 'Count',
-            data: revoked[1],
-            backgroundColor: [
-                'rgb(255, 99, 132)',
-                'rgb(54, 162, 235)',
-                'rgb(255, 205, 86)'
-            ],
+            backgroundColor: chartColours,
             hoverOffset: 4
             }]
         },
@@ -398,12 +308,11 @@ async function renderCharts(){
         data:   {
             datasets: [{
             label: 'Bluebook / Home Value',
-            data: scatterData,
             backgroundColor: 'rgb(255, 99, 132)'
             }],
         },
         options: {
-            events: [],
+            //events: [],
             responsive: false,
             scales: {
                 x: {
@@ -428,15 +337,9 @@ async function renderCharts(){
     claimFrequencyChartConfig = {
         type: 'pie',
         data:  {
-            labels: claimFrequency[0],
             datasets: [{
             label: 'Count',
-            data: claimFrequency[1],
-            backgroundColor: [
-                'rgb(255, 99, 132)',
-                'rgb(54, 162, 235)',
-                'rgb(255, 205, 86)'
-            ],
+            backgroundColor: chartColours,
             hoverOffset: 4
             }]
         },
@@ -457,15 +360,9 @@ async function renderCharts(){
     urbanCityChartConfig = {
         type: 'pie',
         data:  {
-            labels: UrbanCity[0],
             datasets: [{
             label: 'Count',
-            data: UrbanCity[1],
-            backgroundColor: [
-                'rgb(255, 99, 132)',
-                'rgb(54, 162, 235)',
-                'rgb(255, 205, 86)'
-            ],
+            backgroundColor: chartColours,
             hoverOffset: 4
             }]
         },
@@ -486,59 +383,50 @@ async function renderCharts(){
     
 
     const charts = [
-        { name: "professionsChart", config: professionsChartConfig },
-        { name: "penaltyPointChart", config: penaltyPointConfiguration },
-        { name: "carTypeChart", config: carTypeChartConfig },
-        { name: "ageChart", config: ageChartConfiguration },
-        { name: "carUseChart", config: carUseChartConfig },
-        { name: "homeKidsChart", config: homeKidsChartConfig },
-        { name: "kidsDriveChart", config: kidsDriveChartConfig },
-        { name: "revokedChart", config: revokedChartConfig },
-        { name: "carAgeChart", config: carAgeChartConfiguration },
-        { name: "claimFrequencyChart", config: claimFrequencyChartConfig },
-        { name: "urbanCityChart", config: urbanCityChartConfig },
-        { name: "scatterChart", config: ScatterConfig }
+        { name: "professionsChart", metric:"Occupation", config: professionsChartConfig },
+        { name: "penaltyPointChart", metric:"MVR_PTS", config: penaltyPointConfiguration },
+        { name: "carTypeChart", metric:"CarType", config: carTypeChartConfig },
+        { name: "ageChart", metric:"Age", config: ageChartConfiguration },
+        { name: "carUseChart", metric:"CarUse", config: carUseChartConfig },
+        { name: "homeKidsChart", metric:"HomeKids", config: homeKidsChartConfig },
+        { name: "kidsDriveChart", metric:"KidsDrive", config: kidsDriveChartConfig },
+        { name: "revokedChart", metric:"Revoked", config: revokedChartConfig },
+        { name: "carAgeChart", metric:"CarAge", config: carAgeChartConfiguration },
+        { name: "claimFrequencyChart", metric:"ClaimFrequency", config: claimFrequencyChartConfig },
+        { name: "urbanCityChart", metric:"UrbanCity", config: urbanCityChartConfig },
+        { name: "scatterChart", metric:"BlueBook/HomeValue", config: ScatterConfig }
       ];
       
-      charts.forEach(({ name, config }) => {
-        chartObject[name] = new ChartContainer(name, config);
+      charts.forEach(({ name, metric, config }) => {
+        chartObject[name] = new ChartContainer(name, metric, config);
       });
+
+      await updateCharts();
 
 }
 
 async function updateCharts() {
 
+    $("#resultCount").text("LOADING...");
     filterstate = getFilterState();
-    data = await getAllDrivers(filterstate);
+    
+    await Promise.all([
+        data = await getAllDrivers(filterstate),
+        chartObject.professionsChart.updateChart(),
+        chartObject.carTypeChart.updateChart(),
+        chartObject.penaltyPointChart.updateChart(),
+        chartObject.ageChart.updateChart(),
+        chartObject.carUseChart.updateChart(),
+        chartObject.homeKidsChart.updateChart(),
+        chartObject.kidsDriveChart.updateChart(),
+        chartObject.revokedChart.updateChart(),
+        chartObject.carAgeChart.updateChart(),
+        chartObject.claimFrequencyChart.updateChart(),
+        chartObject.urbanCityChart.updateChart(),
+        chartObject.scatterChart.updateChart()
+      ]);
+    
 
     $("#resultCount").text("Results Returned: " + data.length + "");
-
-    let professions = getMetric(data, "Occupation");
-    let carType = getMetric(data, "CarType");
-    let MVRPoints = getMetric(data, "MVR_PTS");
-    let Age = getMetric(data, "Age");
-    let carUse = getMetric(data, "CarUse");
-    let homeKids = getMetric(data, "HomeKids");
-    let kidsDrive = getMetric(data, "KidsDrive");
-    let revoked = getMetric(data, "Revoked");
-    let carAge = getMetric(data, "CarAge");
-    let claimFrequency = getMetric(data, "ClaimFrequency");
-    let UrbanCity = getMetric(data, "UrbanCity");
-
-
-    let scatterData = getScatter(data, "BlueBook", "HomeValue"); //this modifies the base data :(
-
-    chartObject.professionsChart.updateChart(professions[0], professions[1]);
-    chartObject.carTypeChart.updateChart(carType[0], carType[1]);
-    chartObject.penaltyPointChart.updateChart(MVRPoints[0], MVRPoints[1]);
-    chartObject.ageChart.updateChart(Age[0], Age[1]);
-    chartObject.carUseChart.updateChart(carUse[0], carUse[1]);
-    chartObject.homeKidsChart.updateChart(homeKids[0], homeKids[1]);
-    chartObject.kidsDriveChart.updateChart(kidsDrive[0], kidsDrive[1]);
-    chartObject.revokedChart.updateChart(revoked[0], revoked[1]);
-    chartObject.carAgeChart.updateChart(carAge[0], carAge[1]);
-    chartObject.claimFrequencyChart.updateChart(claimFrequency[0], claimFrequency[1]);
-    chartObject.urbanCityChart.updateChart(UrbanCity[0], UrbanCity[1]);
-    //chartObject.scatterChart.updateChart(false, scatterData);
 
 }

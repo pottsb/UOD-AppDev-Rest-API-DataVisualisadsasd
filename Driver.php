@@ -34,11 +34,11 @@ class Driver{
                                 $mstatus, $gender, $education, $occupation, $travtime, $caruse, $bluebook, $tif, $cartype, $redcar, $oldclaim,
                                 $claimfrequency, $revoked, $mvr_pts, $claimammount, $carage, $claimflag, $urbancity)
     {
-        $this->Id = $id;
-        $this->KidsDrive = $kidsdrive;
+        $this->Id = (int)$id;
+        $this->KidsDrive = (int)$kidsdrive;
         $this->DOB = $dob;
-        $this->Age = $age;
-        $this->HomeKids = $homekids;
+        $this->Age = (int)$age;
+        $this->HomeKids = (int)$homekids;
         $this->YOJ = $yoj;
         $this->Income = $income;
         $this->Parent = $parent;
@@ -56,9 +56,9 @@ class Driver{
         $this->OldClaim = $oldclaim;
         $this->ClaimFrequency = $claimfrequency;
         $this->Revoked = $revoked;
-        $this->MVR_PTS = $mvr_pts;
+        $this->MVR_PTS = (int)$mvr_pts;
         $this->ClaimAmmount = $claimammount;
-        $this->CarAge = $carage;
+        $this->CarAge = (int)$carage;
         $this->ClaimFlag = $claimflag;
         $this->UrbanCity = $urbancity;
     }
