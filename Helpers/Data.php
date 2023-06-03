@@ -1,10 +1,7 @@
 <?php
 
-
 function filterResults($parameters, $driverArray)
 {
-
-    
     $supportedKeys = [
         "Gender", 
         "RedCar", 

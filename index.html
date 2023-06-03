@@ -12,18 +12,14 @@
     <script src="Scripts/modernizr-2.6.2.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="Content/Site.css" rel="stylesheet" />
-
-
-
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
+        <div class="container linkContainer">
             <div class="navbar-header">
                 <a class="navbar-brand" href="/">Insurance Data Visualisation</a>
                 <a class="navbar-brand" href="/edit.html">Edit Data</a>
             </div>
-            
         </div>
         
         <div class="filtersColContainer">
@@ -76,7 +72,6 @@
                     <option value="No">No</option>
                 </select>
 
-
                 <label for="inputClaim">Made Claim:</label>
                 <select name="inputClaim" id="inputClaim">
                     <option value="unset">Any</option>
@@ -86,51 +81,49 @@
 
                 <label id="resultCount">LOADING...</label>
             </div>
-            
     </div>
     
-    <div class=" body-content">
-        <div class="contentColContainer ">
-            <div class="contentCollumn3  productcol vcenter pill">
+    <div class="body-content">
+        <div class="contentColContainer">
+            <div class="contentCollumn3  productcol vcenter">
                 <canvas class="hcenter chartCanvas" id="professionsChart"></canvas>
             </div>
-            <div class="contentCollumn3 productcol pill">
+            <div class="contentCollumn3 productcol">
                 <canvas class="hcenter chartCanvas" id="homeKidsChart"></canvas>
             </div>
-            <div class="contentCollumn3  productcol vcenter pill">
+            <div class="contentCollumn3  productcol vcenter">
                 <canvas class="hcenter chartCanvas" id="kidsDriveChart"></canvas>
             </div>
         </div>
-        
         <div class="contentColContainer">
-            <div class="contentCollumn2 productcol pill">
+            <div class="contentCollumn2 productcol">
                 <canvas class="hcenter chartCanvas" id="ageChart"></canvas>
             </div>
-            <div class="contentCollumn2 productcol pill">
+            <div class="contentCollumn2 productcol">
                 <canvas class="hcenter chartCanvas" id="penaltyPointChart"></canvas>
             </div>
         </div>	
-        <div class="contentColContainer ">
-            <div class="contentCollumn3  productcol vcenter pill">
+        <div class="contentColContainer">
+            <div class="contentCollumn3  productcol vcenter">
                 <canvas class="hcenter chartCanvas" id="carTypeChart"></canvas>
             </div>
-            <div class="contentCollumn3 productcol pill">
+            <div class="contentCollumn3 productcol">
                 <canvas class="hcenter chartCanvas" id="carUseChart"></canvas>
             </div>
-            <div class="contentCollumn3  productcol vcenter pill">
+            <div class="contentCollumn3  productcol vcenter">
                 <canvas class="hcenter chartCanvas" id="urbanCityChart"></canvas>
             </div>
         </div>
         <div class="contentColContainer">
-            <div class="contentCollumn2 productcol pill">
+            <div class="contentCollumn2 productcol">
                 <canvas class="hcenter chartCanvas" id="scatterChart"></canvas>
             </div>
-            <div class="contentCollumn2 productcol pill">
+            <div class="contentCollumn2 productcol">
                 <canvas class="hcenter chartCanvas" id="carAgeChart"></canvas>
             </div>
         </div>
-        <div class="contentColContainer ">
-            <div class="contentCollumn3  productcol vcenter pill financetable">
+        <div class="contentColContainer">
+            <div class="contentCollumn3  productcol vcenter financetable">
                 <table>
 
                       <tr>
@@ -163,25 +156,16 @@
                     </table>
                 
             </div>
-            <div class="contentCollumn3 productcol pill">
+            <div class="contentCollumn3 productcol">
                 <canvas class="hcenter chartCanvas" id="claimFrequencyChart"></canvas>
             </div>
-            <div class="contentCollumn3  productcol vcenter pill">
+            <div class="contentCollumn3  productcol vcenter">
                 <canvas class="hcenter chartCanvas" id="revokedChart"></canvas>
             </div>
         </div>
         
-       <script>
-        renderCharts();
-      </script>
-    <footer>
-        <p>&copy; 2023 - 100191919</p>
-    </footer>
+    <script>renderCharts();</script>
+    <footer><p>&copy; 2023 - 100191919</p></footer>
     </div>
-
-
-
-
-
 </body>
 </html>

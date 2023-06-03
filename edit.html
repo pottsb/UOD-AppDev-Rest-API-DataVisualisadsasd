@@ -10,55 +10,28 @@
     <script src="Scripts/bootstrap.min.js"></script>
     <link href="Content/Site.css" rel="stylesheet" />
     <script src="Scripts/modernizr-2.6.2.js"></script>
-
     <link rel="stylesheet" media="all" href="https://s3.amazonaws.com/dynatable-docs-assets/css/jquery.dynatable.css" />
     <script type='text/javascript' src='https://s3.amazonaws.com/dynatable-docs-assets/js/jquery.dynatable.js'></script>
 </head>
 <body>
   <div class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
+    <div class="container linkContainer">
         <div class="navbar-header">
             <a class="navbar-brand" href="/">Insurance Data Visualisation</a>
             <a class="navbar-brand" href="/edit.html">Edit Data</a>
         </div>
-        
     </div>
-    
     <div class="filtersColContainer">
       <input type="button" value="Get All Drivers" class="btn btn-sm btn-primary" onclick="createDriverTable();" />
-
       <input type="button" value="Add New Driver" class="btn btn-sm btn-primary" onclick="createNewDriverForm();" />
-        </div>
-        
-</div>
-    <div class="container body-content">
-        <div class="row">
-            <div class="col-md-12">
-                &nbsp;
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                &nbsp;
-            </div>
-        </div>
-        <div id="allbooks" class="row">
-        </div>
-        <div id="newbookform" class="row">
-        </div>
-
-        <footer>
-            <p>&copy; 2023 - 100191919</p>
-        </footer>
     </div>
+  </div>
+  <div class="container body-content">
+    <div id="mainContent"></div>
+    <div id="newdriverform"></div>
+    <footer><p>&copy; 2023 - 100191919</p></footer>
+  </div>
 
-  
-  <!-- Modal -->
   <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -77,9 +50,5 @@
       </div>
     </div>
   </div>
-
-
-
-
 </body>
 </html>

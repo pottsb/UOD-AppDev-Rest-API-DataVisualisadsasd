@@ -127,7 +127,7 @@ class RestService
 			$this->performPost($url, $requestLocation, $requestBody, $accept, $parameters);
 			break;
 		  case 'PUT':
-			$this->performPut(requestLocation);
+			$this->performPut($url, $requestLocation, $requestBody, $accept, $parameters);
 			break;
 		  case 'DELETE':
 			$this->performDelete($url, $requestLocation, $requestBody, $accept, $parameters);

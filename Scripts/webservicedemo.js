@@ -1,12 +1,4 @@
-﻿// jQuery functions to manipulate the main page and handle communication with
-// the books web service via Ajax.
-//
-// Note that there is very little error handling in this file.  In particular, there
-// is no validation in the handling of form data.  This is to avoid obscuring the 
-// core concepts that the demo is supposed to show.
-
-
-function getAllDrivers()
+﻿function getAllDrivers()
 {
     return new Promise((resolve) => {
         setTimeout(() => {
@@ -26,10 +18,10 @@ function getAllDrivers()
       });
 }
 
-function editDriver(bookId)
+function editDriver(driverId)
 {
     $.ajax({
-        url: '/drivers/' + bookId,
+        url: '/drivers/' + driverId,
         type: 'GET',
         cache: false,
         dataType: 'json',
@@ -42,14 +34,14 @@ function editDriver(bookId)
     });
 }
 
-function deleteDriver(bookId)
+function deleteDriver(driverId)
 {
     $.ajax({
-        url: '/drivers/' + bookId,
+        url: '/drivers/' + driverId,
         type: 'DELETE',
         dataType: 'json',
-        success: function (data) {
-            $(`#driverTable tbody tr:contains('${bookId}')`).remove();
+        success: function () {
+            $(`#driverTable tbody tr:contains('${driverId}')`).remove();
         },
         error: function (jqXHR, textStatus, errorThrown) {
             alert(jqXHR + '\n' + textStatus + '\n' + errorThrown);
@@ -102,16 +94,16 @@ function addDriver()
             alert(jqXHR + '\n' + textStatus + '\n' + errorThrown);
         }
     });
-    $("#newbookform").html("");
+    $("#newdriverform").html("");
 
 }
 
-function cancelChangeBook()
+function cancelChangeDriver()
 {
-    $("#newbookform").html("");
+    $("#newdriverform").html("");
 }
 
-function editDriverkValues(bookId)
+function editDriverkValues()
 {
     var DOB = new Date($('#DOBdateyear').val(), $('#DOBdatemonth').val() - 1, $('#DOBdateday').val()).toISOString().slice(0, 19).replace('T', ' ');
     var driver = {
@@ -149,14 +141,14 @@ function editDriverkValues(bookId)
         type: 'PUT',
         data: JSON.stringify(driver),
         contentType: "application/json;charset=utf-8",
-        success: function (data) {
+        success: function () {
             getAllDrivers();
         },
         error: function (jqXHR, textStatus, errorThrown) {
             alert(jqXHR + '\n' + textStatus + '\n' + errorThrown);
         }
     });
-    $("#newbookform").html("");
+    $("#newdriverform").html("");
 
 }
 
@@ -164,85 +156,86 @@ function editDriverkValues(bookId)
 async function createDriverTable()
 {
     var loadingHTML = "<div id='loadingContainer'><img src='/Images/throbber.gif' width='100' height='100' ><br><br><p class='loadingtext'>LOADING...<br></p></div>";
-    $("#allbooks").html(loadingHTML);
+    $("#mainContent").html(loadingHTML);
+    $("#newdriverform").html("");
 
-    books = await getAllDrivers();
+    drivers = await getAllDrivers();
     
     var strResult = '<div class="col-md-12">' + 
                     '<table  id="driverTable" class="table table-bordered table-hover">' +
                     '<thead>' +
                     '<tr>' +
                     '<th>ID</th>' +
-                    '<th>KIDSDRIVE</th>' +
-                    '<th>DateofBirth</th>' +
-                    '<th>AGE</th>' +
-                    '<th>HOMEKIDS</th>' +
+                    '<th>Kids Drive</th>' +
+                    '<th>DateOfBirth</th>' +
+                    '<th>Age</th>' +
+                    '<th>Kids At Home</th>' +
                     '<th>YOJ</th>' +
-                    '<th>INCOME</th>' +
-                    '<th>PARENT</th>' +
-                    '<th>HOME_VAL</th>' +
-                    '<th>MSTATUS</th>' +
-                    '<th>GENDER</th>' +
-                    '<th>EDUCATION</th>' +
-                    '<th>OCCUPATION</th>' +
-                    '<th>TRAVTIME</th>' +
-                    '<th>CAR_USE</th>' +
-                    '<th>BLUEBOOK</th>' +
+                    '<th>Income</th>' +
+                    '<th>Parent</th>' +
+                    '<th>Home Value</th>' +
+                    '<th>Marital Status</th>' +
+                    '<th>Gender</th>' +
+                    '<th>Education</th>' +
+                    '<th>Occupation</th>' +
+                    '<th>Travel Time</th>' +
+                    '<th>Car Use</th>' +
+                    '<th>Bluebook</th>' +
                     '<th>TIF</th>' +
-                    '<th>CAR_TYPE</th>' +
-                    '<th>RED_CAR</th>' +
-                    '<th>OLDCLAIM</th>' +
-                    '<th>CLM_FREQ</th>' +
-                    '<th>REVOKED</th>' +
-                    '<th>MVR_PTS</th>' +
-                    '<th>CLM_AMT</th>' +
-                    '<th>CAR_AGE</th>' +
-                    '<th>CLAIM_FLAG</th>' +
-                    '<th>Highly/Urban/Urban=====</th>' +  
+                    '<th>Car Type</th>' +
+                    '<th>Red Car</th>' +
+                    '<th>Old Claim</th>' +
+                    '<th>Claim Frequency</th>' +
+                    '<th>Revoked</th>' +
+                    '<th>Penalty Points</th>' +
+                    '<th>Claim Ammount</th>' +
+                    '<th>Car Age</th>' +
+                    '<th>Claim Flag</th>' +
+                    '<th>Highly/Urban/Urban</th>' +  
                     '<th></th>' +  
                     '<th></th>' +                    
                     '</tr>' +
                     '</thead>' +
                     '<tbody>';
-    $.each(books, function (index, book) 
+    $.each(drivers, function (index, driver) 
     {   
-        deleteAction = "runModal('Please Confirm', 'Are you sure you want to delete driver " + book.Id + "?', 'Delete', 'deleteDriver(" + book.Id + ")') "
+        deleteAction = "runModal('Please Confirm', 'Are you sure you want to delete driver " + driver.Id + "?', 'Delete', 'deleteDriver(" + driver.Id + ")') "
         strResult +=  `<tr><td>`;
-        strResult +=  + book.Id + "</td><td>" 
-        + book.KidsDrive + "</td><td>" 
-        + book.DOB + "</td><td>" 
-        + book.Age + "</td><td>" 
-        + book.HomeKids + "</td><td>" 
-        + book.YOJ + "</td><td>" 
-        + book.Income + "</td><td>" 
-        + book.Parent + "</td><td>" 
-        + book.HomeValue + "</td><td>" 
-        + book.MStatus + "</td><td>" 
-        + book.Gender + "</td><td>" 
-        + book.Education + "</td><td>" 
-        + book.Occupation + "</td><td>" 
-        + book.TravTime + "</td><td>" 
-        + book.CarUse + "</td><td>" 
-        + book.BlueBook + "</td><td>" 
-        + book.TIF + "</td><td>" 
-        + book.CarType + "</td><td>" 
-        + book.RedCar + "</td><td>" 
-        + book.OldClaim + "</td><td>" 
-        + book.ClaimFrequency + "</td><td>" 
-        + book.Revoked + "</td><td>" 
-        + book.MVR_PTS + "</td><td>" 
-        + book.ClaimAmmount + "</td><td>" 
-        + book.CarAge + "</td><td>" 
-        + book.ClaimFlag + "</td><td>" 
-        + book.UrbanCity + "</td><td>";        
-        strResult += '<input type="button" value="Edit Driver" class="btn btn-sm btn-primary" onclick="editDriver(' + book.Id + ');" />';
+        strResult +=  + driver.Id + "</td><td>" 
+        + driver.KidsDrive + "</td><td>" 
+        + driver.DOB + "</td><td>" 
+        + driver.Age + "</td><td>" 
+        + driver.HomeKids + "</td><td>" 
+        + driver.YOJ + "</td><td>" 
+        + driver.Income + "</td><td>" 
+        + driver.Parent + "</td><td>" 
+        + driver.HomeValue + "</td><td>" 
+        + driver.MStatus + "</td><td>" 
+        + driver.Gender + "</td><td>" 
+        + driver.Education + "</td><td>" 
+        + driver.Occupation + "</td><td>" 
+        + driver.TravTime + "</td><td>" 
+        + driver.CarUse + "</td><td>" 
+        + driver.BlueBook + "</td><td>" 
+        + driver.TIF + "</td><td>" 
+        + driver.CarType + "</td><td>" 
+        + driver.RedCar + "</td><td>" 
+        + driver.OldClaim + "</td><td>" 
+        + driver.ClaimFrequency + "</td><td>" 
+        + driver.Revoked + "</td><td>" 
+        + driver.MVR_PTS + "</td><td>" 
+        + driver.ClaimAmmount + "</td><td>" 
+        + driver.CarAge + "</td><td>" 
+        + driver.ClaimFlag + "</td><td>" 
+        + driver.UrbanCity + "</td><td>";        
+        strResult += '<input type="button" value="Edit Driver" class="btn btn-sm btn-primary" onclick="editDriver(' + driver.Id + ');" />';
         strResult += '</td><td>';
         strResult += '<input type="button" value="Delete Driver" class="btn btn-sm btn-primary" onclick="' + deleteAction + '" />';
         strResult += "</td></tr>";
         
     });
     strResult += "</tbody></table>";
-    $("#allbooks").html(strResult);
+    $("#mainContent").html(strResult);
     $('#driverTable').dynatable({
         features: {
             search: false // Disable the search box
@@ -279,20 +272,21 @@ function createNewDriverForm()
     strResult += '<div class="form-group"><label for="OldClaim" class="col-md-3 control-label">Old Claim</label><div class="col-md-9"><input type="text" class="form-control" id="OldClaim"></div></div>';
     strResult += '<div class="form-group"><label for="ClaimFrequency" class="col-md-3 control-label">Claim Frequency</label><div class="col-md-9"><input type="text" class="form-control" id="ClaimFrequency"></div></div>';
     strResult += '<div class="form-group"><label for="Revoked" class="col-md-3 control-label">Revoked</label><div class="col-md-9"><input type="text" class="form-control" id="Revoked"></div></div>';
-    strResult += '<div class="form-group"><label for="MVR_PTS" class="col-md-3 control-label">MVR_PTS</label><div class="col-md-9"><input type="text" class="form-control" id="MVR_PTS"></div></div>';
+    strResult += '<div class="form-group"><label for="MVR_PTS" class="col-md-3 control-label">Penalty Points</label><div class="col-md-9"><input type="text" class="form-control" id="MVR_PTS"></div></div>';
     strResult += '<div class="form-group"><label for="ClaimAmmount" class="col-md-3 control-label">Claim Ammount</label><div class="col-md-9"><input type="text" class="form-control" id="ClaimAmmount"></div></div>';
     strResult += '<div class="form-group"><label for="CarAge" class="col-md-3 control-label">Car Age</label><div class="col-md-9"><input type="text" class="form-control" id="CarAge"></div></div>';
     strResult += '<div class="form-group"><label for="ClaimFlag" class="col-md-3 control-label">Claim Flag</label><div class="col-md-9"><input type="text" class="form-control" id="ClaimFlag"></div></div>';
     strResult += '<div class="form-group"><label for="UrbanCity" class="col-md-3 control-label">Urban/City</label><div class="col-md-9"><select id="UrbanCity" class="form-control"><option value="Highly Urban/ Urban">Highly Urban/ Urban</option><option value="Highly Rural/ Rural">Highly Rural/ Rural</option></select></div></div>';    
-    strResult += '<div class="form-group"><div class="col-md-offset-3 col-md-9"><input type="button" value="Add Driver" class="btn btn-sm btn-primary" onclick="addDriver();" />&nbsp;&nbsp;<input type="button" value="Cancel" class="btn btn-sm btn-primary" onclick="cancelChangeBook();" /></div></div>';
+    strResult += '<div class="form-group"><div class="col-md-offset-3 col-md-9"><input type="button" value="Add Driver" class="btn btn-sm btn-primary" onclick="addDriver();" />&nbsp;&nbsp;<input type="button" value="Cancel" class="btn btn-sm btn-primary" onclick="cancelChangeDriver();" /></div></div>';
     strResult += '</form></div>';
-    $("#newbookform").html(strResult);
-
+    $("#newdriverform").html(strResult);
+    document.querySelector('#newdriverform').scrollIntoView({behavior: 'smooth'});
 
 }
 
-function createEditDriverForm(driver)
+function createEditDriverForm(driverArray)
 {
+    driver = driverArray[0];
     var DOB = new Date(driver.DOB);
     var strResult = '<div class="col-md-12">';
     strResult += '<form class="form-horizontal" role="form">';
@@ -319,15 +313,15 @@ function createEditDriverForm(driver)
     strResult += '<div class="form-group"><label for="OldClaim" class="col-md-3 control-label">Old Claim</label><div class="col-md-9"><input type="text" class="form-control" id="OldClaim" value="' + driver.OldClaim+ '"></div></div>';
     strResult += '<div class="form-group"><label for="ClaimFrequency" class="col-md-3 control-label">Claim Frequency</label><div class="col-md-9"><input type="text" class="form-control" id="ClaimFrequency" value="' + driver.ClaimFrequency+ '"></div></div>';
     strResult += '<div class="form-group"><label for="Revoked" class="col-md-3 control-label">Revoked</label><div class="col-md-9"><input type="text" class="form-control" id="Revoked" value="' + driver.Revoked+ '"></div></div>';
-    strResult += '<div class="form-group"><label for="MVR_PTS" class="col-md-3 control-label">MVR_PTS</label><div class="col-md-9"><input type="text" class="form-control" id="MVR_PTS" value="' + driver.MVR_PTS+ '"></div></div>';
+    strResult += '<div class="form-group"><label for="MVR_PTS" class="col-md-3 control-label">Penalty Points</label><div class="col-md-9"><input type="text" class="form-control" id="MVR_PTS" value="' + driver.MVR_PTS+ '"></div></div>';
     strResult += '<div class="form-group"><label for="ClaimAmmount" class="col-md-3 control-label">Claim Ammount</label><div class="col-md-9"><input type="text" class="form-control" id="ClaimAmmount" value="' + driver.ClaimAmmount+ '"></div></div>';
     strResult += '<div class="form-group"><label for="CarAge" class="col-md-3 control-label">Car Age</label><div class="col-md-9"><input type="text" class="form-control" id="CarAge" value="' + driver.CarAge+ '"></div></div>';
     strResult += '<div class="form-group"><label for="ClaimFlag" class="col-md-3 control-label">Claim Flag</label><div class="col-md-9"><input type="text" class="form-control" id="ClaimFlag" value="' + driver.ClaimFlag+ '"></div></div>';
     strResult += '<div class="form-group"><label for="UrbanCity" class="col-md-3 control-label">Urban/City</label><div class="col-md-9"><select id="UrbanCity" class="form-control"><option value="Highly Urban/ Urban">Highly Urban/ Urban</option><option value="Highly Rural/ Rural">Highly Rural/ Rural</option></select></div></div>';    
 
-    strResult += '<div class="form-group"><div class="col-md-offset-3 col-md-9"><input type="button" value="Edit Driver" class="btn btn-sm btn-primary" onclick="editDriverkValues(' + driver.Id + ');" />&nbsp;&nbsp;<input type="button" value="Cancel" class="btn btn-sm btn-primary" onclick="cancelChangeBook();" /></div></div>';
+    strResult += '<div class="form-group"><div class="col-md-offset-3 col-md-9"><input type="button" value="Edit Driver" class="btn btn-sm btn-primary" onclick="editDriverkValues(' + driver.Id + ');" />&nbsp;&nbsp;<input type="button" value="Cancel" class="btn btn-sm btn-primary" onclick="cancelChangeDriver();" /></div></div>';
     strResult += '</form></div>';
-    $("#newbookform").html(strResult);
+    $("#newdriverform").html(strResult);
 
     $("#Parent").val(driver.Parent);
     $("#MStatus").val(driver.MStatus);
@@ -337,24 +331,8 @@ function createEditDriverForm(driver)
     $("#CarType").val(driver.CarType);
     $("#RedCar").val(driver.RedCar);
     $("#UrbanCity").val(driver.UrbanCity);
-}
 
-function createEditBookForm(book)
-{
-    var publishDate = new Date(book.PublishDate);
-    var strResult = '<div class="col-md-12">';
-    strResult += '<form class="form-horizontal" role="form">';
-    strResult += '<div class="form-group"><label for="booktitle" class="col-md-3 control-label">Book Title</label><div class="col-md-9"><input type="text" class="form-control" id="booktitle" value="' + book.Title + '" ></div></div>';
-    strResult += '<div class="form-group"><label for="bookauthor" class="col-md-3 control-label">Author</label><div class="col-md-9"><input type="text" class="form-control" id="bookauthor" value="' + book.Author + '" ></div></div>';
-    strResult += '<div class="form-group"><label for="bookdesc" class="col-md-3 control-label">Description</label><div class="col-md-9"><input type="text" class="form-control" id="bookdesc"  value="' + book.Description + '" ></div></div>';
-    strResult += '<div class="form-group"><label for="bookgenre" class="col-md-3 control-label">Genre</label><div class="col-md-9"><input type="text" class="form-control" id="bookgenre" value="' + book.Genre + '" ></div></div>';
-    strResult += '<div class="form-group"><label for="bookdateday" class="col-md-3 control-label">Publication Date</label><div class="col-md-1"><input type="text" class="form-control" id="bookdateday" placeholder="dd" size="2" value="' + publishDate.getDate() + '"> </div><div class="col-md-1"><input type="text" class="form-control" id="bookdatemonth" placeholder="mm" size="2" value="' + (publishDate.getMonth() + 1) + '"></div><div class="col-md-1"><input type="text" class="form-control" id="bookdateyear" placeholder="yyyy" size="4" value="' + publishDate.getFullYear() + '"></div></div>';
-    strResult += '<div class="form-group"><label for="bookprice" class="col-md-3 control-label">Price</label><div class="col-md-9"><input type="text" class="form-control" id="bookprice" value="' + book.Price + '" ></div></div>';
-    
-    strResult += '<div class="form-group"><div class="col-md-offset-3 col-md-9"><input type="button" value="Edit Book" class="btn btn-sm btn-primary" onclick="editBookValues(' + book.BookId + ');" />&nbsp;&nbsp;<input type="button" value="Cancel" class="btn btn-sm btn-primary" onclick="cancelChangeBook();" /></div></div>';
-    strResult += '</form></div>';
-    $("#newbookform").html(strResult);
-
+    document.querySelector('#newdriverform').scrollIntoView({behavior: 'smooth'});
 }
 
 function runModal(title, body, buttonText, buttonFunction){
