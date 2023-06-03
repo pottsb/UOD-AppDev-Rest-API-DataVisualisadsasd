@@ -50,7 +50,10 @@ class ChartContainer {
     }
 }
   
-
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    //https://stackoverflow.com/questions/2901102/how-to-format-a-number-with-commas-as-thousands-separators
+}
 
 function getAllDrivers(filterstate){
     return new Promise((resolve) => {
@@ -72,6 +75,42 @@ function getAllDrivers(filterstate){
       });
 }
 
+function getFianancialData(filterstate){
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            $.ajax({
+                url: '/drivers/metric/Financial',
+                type: 'GET',
+                data: filterstate,
+                cache: false,
+                dataType: 'json',
+                success: function (data) {
+                    resolve(data);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert(jqXHR + '\n' + textStatus + '\n' + errorThrown);
+                }
+            });
+        }, 2000);
+      });
+}
+
+async function updateFinancialData(){
+
+    data = await getFianancialData(getFilterState());
+
+    $("#claimAmtMin").text("£" + numberWithCommas(data["ClaimAmmount"]["Min"]));
+    $("#claimAmtMax").text("£" + numberWithCommas(data["ClaimAmmount"]["Max"]));
+    $("#claimAmtAvg").text("£" + numberWithCommas(data["ClaimAmmount"]["Avg"]));
+
+    $("#oldClaimMin").text("£" + numberWithCommas(data["OldClaim"]["Min"]));
+    $("#oldClaimMax").text("£" + numberWithCommas(data["OldClaim"]["Max"]));
+    $("#oldClaimAvg").text("£" + numberWithCommas(data["OldClaim"]["Avg"]));
+
+    $("#incomeMin").text("£" + numberWithCommas(data["Income"]["Min"]));
+    $("#incomeMax").text("£" + numberWithCommas(data["Income"]["Max"]));
+    $("#incomeAvg").text("£" + numberWithCommas(data["Income"]["Avg"]));
+}
 
 
 function getFilterState() {
@@ -411,6 +450,7 @@ async function updateCharts() {
     filterstate = getFilterState();
     
     await Promise.all([
+        updateFinancialData(),
         data = await getAllDrivers(filterstate),
         chartObject.professionsChart.updateChart(),
         chartObject.carTypeChart.updateChart(),
@@ -426,7 +466,6 @@ async function updateCharts() {
         chartObject.scatterChart.updateChart()
       ]);
     
-
     $("#resultCount").text("Results Returned: " + data.length + "");
 
 }

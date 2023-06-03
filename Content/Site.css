@@ -116,3 +116,39 @@ input[type="checkbox"].input-validation-error {
     max-width: 100%;
     height: 100%;
   }
+
+.financetable{
+    font-size: 1.5em;
+    display: flex;
+    padding-left:50px;
+    align-items: center;
+    
+}
+
+.financetable td{
+    padding: 10px;
+}
+
+.financetable th{
+    padding: 10px;
+    font-weight: normal !important;
+}
+
+.financetable tr:nth-child(even) {
+    background-color: lightgrey;
+}
+
+.financetable tr:nth-child(even) td:first-child {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.financetable tr:nth-child(even) td:last-child {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+
+.financetable span {
+    font-weight: bold;
+}

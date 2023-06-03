@@ -52,8 +52,15 @@ class DriverRestService extends RestService
 				header('no-cache,no-store');
 				$drivers = getAlldrivers();
 				$filteredResults = filterResults($parameters, $drivers);
-				$prunedResults = getMetric($metric, $filteredResults);
-				$formattedResults = formatChartData($metric,$prunedResults);
+
+				if ($metric === "Financial"){
+					$formattedResults = formatFianancialData($filteredResults);
+				}else{
+					$prunedResults = getMetric($metric, $filteredResults);
+					$formattedResults = formatChartData($metric,$prunedResults);
+				}
+				
+
 				echo json_encode($formattedResults);
 				break;
 			

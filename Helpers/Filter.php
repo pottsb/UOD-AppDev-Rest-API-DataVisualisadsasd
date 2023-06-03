@@ -94,4 +94,43 @@ function formatScatterData($drivers, $metric1, $metric2)
     return $data;
 }
 
+function formatFianancialData($drivers){
+
+
+    $IncomeArray = [];
+    $OldClaimArray = [];
+    $ClaimAmmountArray = [];
+
+    foreach ($drivers as $driver)
+    {
+        if ($driver->Income != 0){
+            array_push($IncomeArray, $driver->Income);
+        }
+        if ($driver->OldClaim != 0){
+            array_push($OldClaimArray, $driver->OldClaim);
+        }
+        if ($driver->ClaimAmmount != 0){
+            array_push($ClaimAmmountArray, $driver->ClaimAmmount);
+        }
+
+    }
+
+    if (count($IncomeArray) == 0){
+        $IncomeArray = [0];
+    }
+    if (count($OldClaimArray) == 0){
+        $OldClaimArray = [0];
+    }
+    if (count($ClaimAmmountArray) == 0){
+        $ClaimAmmountArray = [0];
+    }
+    $IncomeData = ["Min" =>(int)min($IncomeArray), "Max" => (int)max($IncomeArray), "Avg" => (int)(array_sum($IncomeArray) / count($IncomeArray))];
+    $OldClaimData = ["Min" =>(int)min($OldClaimArray), "Max" => (int)max($OldClaimArray), "Avg" => (int)(array_sum($OldClaimArray) / count($OldClaimArray))];
+    $ClaimAmmountData = ["Min" =>(int)min($ClaimAmmountArray), "Max" => (int)max($ClaimAmmountArray), "Avg" => (int)(array_sum($ClaimAmmountArray) / count($ClaimAmmountArray))];
+
+    $data = ["Income" => $IncomeData, "OldClaim" => $OldClaimData, "ClaimAmmount" => $ClaimAmmountData];
+
+    return $data;
+}
+
 ?>

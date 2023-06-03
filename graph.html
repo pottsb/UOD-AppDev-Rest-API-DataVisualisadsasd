@@ -14,8 +14,7 @@
     <link href="Content/Site.css" rel="stylesheet" />
 
 
-    <link rel="stylesheet" media="all" href="https://s3.amazonaws.com/dynatable-docs-assets/css/jquery.dynatable.css" />
-    <script type='text/javascript' src='https://s3.amazonaws.com/dynatable-docs-assets/js/jquery.dynatable.js'></script>
+
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -130,7 +129,37 @@
             </div>
         </div>
         <div class="contentColContainer ">
-            <div class="contentCollumn3  productcol vcenter red">
+            <div class="contentCollumn3  productcol vcenter red financetable">
+                <table>
+
+                      <tr>
+                        <th></th>
+                        <th>Minimum</th>
+                        <th>Maximum</th>
+                        <th>Avgerage</th>
+                      </tr>
+            
+                    <tbody>
+                      <tr>
+                        <td>Claim Ammount</td>
+                        <td><span ID="claimAmtMin"></span></td>
+                        <td><span ID="claimAmtMax"></span></td>
+                        <td><span ID="claimAmtAvg"></span></td>
+                      </tr>
+                      <tr>
+                        <td>Old Claims</td>
+                        <td><span ID="oldClaimMin"></span></td>
+                        <td><span ID="oldClaimMax"></span></td>
+                        <td><span ID="oldClaimAvg"></span></td>
+                      </tr>
+                      <tr>
+                        <td>Income</td>
+                        <td><span ID="incomeMin"></span></td>
+                        <td><span ID="incomeMax"></span></td>
+                        <td><span ID="incomeAvg"></span></td>
+                      </tr>
+                    </tbody>
+                    </table>
                 
             </div>
             <div class="contentCollumn3 productcol green">
