@@ -10,8 +10,7 @@ function createDriver($url, $parameters, $requestBody, $accept)
 		{
 			$sql = "insert into data (ID, KIDSDRIVE, DOB, AGE, HOMEKIDS, YOJ, INCOME, PARENT, HOME_VAL, MSTATUS, GENDER, EDUCATION, OCCUPATION, TRAVTIME, 
 			CAR_USE, BLUEBOOK, TIF, CAR_TYPE, RED_CAR, OLDCLAIM, CLM_FREQ, REVOKED, MVR_PTS, CLM_AMT, CAR_AGE, CLAIM_FLAG, URBANICITY) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-			// We pull the fields of the book into local variables since 
-			// the parameters to bind_param are passed by reference.
+
 			$statement = $connection->prepare($sql);
 
 			$Id = $newBook->getId();
