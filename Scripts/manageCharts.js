@@ -248,7 +248,7 @@ async function renderCharts(){
         type: 'bar',
         data: {
             datasets: [{
-            label: "null",
+            label: "Car Age",
             borderWidth: 1
             }]
         },
@@ -505,6 +505,7 @@ async function updateCharts() {
     
     //I'm not sure I'm using this right as not all the functions return a promise but it seems to work.
     //Looking into this would be a good place to start performance optimisation.
+    //NOTE: In testing found data can sometimes be undefined.
     await Promise.all([
         updateFinancialData(),
         data = await getAllDrivers(filterstate),
