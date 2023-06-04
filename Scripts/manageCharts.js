@@ -496,33 +496,51 @@ async function renderCharts(){
 //Called afer filter change to update charts.
 //Changes the result returned count to LOADING.
 //Gets the current filter state.
-//Waits for all synchronous functions to complete. These include each chart individually updating and updating financial data.
+//Waits for all synchronous functions to complete. These include; each chart individually, updating and updating financial data and getting all records currently filtered.
 //Updates the result returned count.
 async function updateCharts() {
 
     $("#resultCount").text("LOADING...");
     filterstate = getFilterState();
-    
-    //I'm not sure I'm using this right as not all the functions return a promise but it seems to work.
-    //Looking into this would be a good place to start performance optimisation.
-    //NOTE: In testing found data can sometimes be undefined.
-    await Promise.all([
-        updateFinancialData(),
-        data = await getAllDrivers(filterstate),
-        chartObject.professionsChart.updateChart(),
-        chartObject.carTypeChart.updateChart(),
-        chartObject.penaltyPointChart.updateChart(),
-        chartObject.ageChart.updateChart(),
-        chartObject.carUseChart.updateChart(),
-        chartObject.homeKidsChart.updateChart(),
-        chartObject.kidsDriveChart.updateChart(),
-        chartObject.revokedChart.updateChart(),
-        chartObject.carAgeChart.updateChart(),
-        chartObject.claimFrequencyChart.updateChart(),
-        chartObject.urbanCityChart.updateChart(),
-        chartObject.scatterChart.updateChart()
-      ]);
-    
+
+    let data;
+
+    //Wrapped this whole block in a try catch to log errors to console in an effort to debug.
+    try {
+
+        //Wrapped this in a promise to allow the updateFinancialData function to be called asynchronously.
+        const updateFinancialDataPromise = new Promise((resolve, reject) => {
+            try {
+                updateFinancialData();
+                resolve();
+            } catch(error) {
+                reject(error);
+            }
+        });
+
+        const results = await Promise.all([
+            updateFinancialDataPromise,
+            getAllDrivers(filterstate),
+            chartObject.professionsChart.updateChart(),
+            chartObject.carTypeChart.updateChart(),
+            chartObject.penaltyPointChart.updateChart(),
+            chartObject.ageChart.updateChart(),
+            chartObject.carUseChart.updateChart(),
+            chartObject.homeKidsChart.updateChart(),
+            chartObject.kidsDriveChart.updateChart(),
+            chartObject.revokedChart.updateChart(),
+            chartObject.carAgeChart.updateChart(),
+            chartObject.claimFrequencyChart.updateChart(),
+            chartObject.urbanCityChart.updateChart(),
+            chartObject.scatterChart.updateChart()
+        ]);
+
+        data = results[1];
+
+    } catch (error) {
+        console.error(error);
+    }
+
     $("#resultCount").text("Results Returned: " + data.length + "");
 
 }
