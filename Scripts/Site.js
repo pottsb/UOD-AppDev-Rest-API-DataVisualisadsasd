@@ -1,4 +1,5 @@
-﻿function getAllDrivers()
+﻿//Requests all drivers from the API and returns them as a promise
+function getAllDrivers()
 {
     return new Promise((resolve) => {
         setTimeout(() => {
@@ -18,6 +19,9 @@
       });
 }
 
+//Called from the edit driver button in the table.
+//Gets the driver from the API and creates a form to edit the driver.
+//Requires a valid ID to be passed in.
 function editDriver(driverId)
 {
     $.ajax({
@@ -34,6 +38,9 @@ function editDriver(driverId)
     });
 }
 
+//Called from the runModal function if the unser confirms deletion.
+//Deletes a driver, returns no content if successful.
+//Requires a valid ID to be passed in.
 function deleteDriver(driverId)
 {
     $.ajax({
@@ -49,6 +56,9 @@ function deleteDriver(driverId)
     });
 }
 
+//Called from the submit button on the create driver form.
+//Grabs the content of the HTML form and sends it to the API.
+//returns no content if successful.
 function addDriver()
 {
     var DOB = new Date($('#DOBdateyear').val(), $('#DOBdatemonth').val() - 1, $('#DOBdateday').val()).toISOString().slice(0, 19).replace('T', ' ');
@@ -98,12 +108,17 @@ function addDriver()
 
 }
 
+//Called from the cancel button when creating or editing a driver.
+//removes the form from the page.
 function cancelChangeDriver()
 {
     $("#newdriverform").html("");
 }
 
-function editDriverkValues()
+//Called from the submit button on the edit driver form.
+//Grabs the content of the HTML form and sends it to the API.
+//returns no content if successful.
+function editDriverValues()
 {
     var DOB = new Date($('#DOBdateyear').val(), $('#DOBdatemonth').val() - 1, $('#DOBdateday').val()).toISOString().slice(0, 19).replace('T', ' ');
     var driver = {
@@ -152,7 +167,8 @@ function editDriverkValues()
 
 }
 
-
+//Called by the Get ALl Drivers button.
+//Gets all drivers from the API and creates a table to display them.
 async function createDriverTable()
 {
     var loadingHTML = "<div id='loadingContainer'><img src='/Images/throbber.gif' width='100' height='100' ><br><br><p class='loadingtext'>LOADING...<br></p></div>";
@@ -241,11 +257,10 @@ async function createDriverTable()
             search: false // Disable the search box
         }
     });
-
-    
 }
 
-
+//Called by the Add New Driver button.
+//Creates a form to add a new driver.
 function createNewDriverForm()
 {
     var strResult = '<div class="col-md-12">';
@@ -284,6 +299,8 @@ function createNewDriverForm()
 
 }
 
+//Called by the editDriver function after driver data has been returned by the API.
+//Create the form to edit a driver
 function createEditDriverForm(driverArray)
 {
     driver = driverArray[0];
@@ -319,7 +336,7 @@ function createEditDriverForm(driverArray)
     strResult += '<div class="form-group"><label for="ClaimFlag" class="col-md-3 control-label">Claim Flag</label><div class="col-md-9"><input type="text" class="form-control" id="ClaimFlag" value="' + driver.ClaimFlag+ '"></div></div>';
     strResult += '<div class="form-group"><label for="UrbanCity" class="col-md-3 control-label">Urban/City</label><div class="col-md-9"><select id="UrbanCity" class="form-control"><option value="Highly Urban/ Urban">Highly Urban/ Urban</option><option value="Highly Rural/ Rural">Highly Rural/ Rural</option></select></div></div>';    
 
-    strResult += '<div class="form-group"><div class="col-md-offset-3 col-md-9"><input type="button" value="Edit Driver" class="btn btn-sm btn-primary" onclick="editDriverkValues(' + driver.Id + ');" />&nbsp;&nbsp;<input type="button" value="Cancel" class="btn btn-sm btn-primary" onclick="cancelChangeDriver();" /></div></div>';
+    strResult += '<div class="form-group"><div class="col-md-offset-3 col-md-9"><input type="button" value="Edit Driver" class="btn btn-sm btn-primary" onclick="editDriverValues(' + driver.Id + ');" />&nbsp;&nbsp;<input type="button" value="Cancel" class="btn btn-sm btn-primary" onclick="cancelChangeDriver();" /></div></div>';
     strResult += '</form></div>';
     $("#newdriverform").html(strResult);
 
@@ -335,6 +352,8 @@ function createEditDriverForm(driverArray)
     document.querySelector('#newdriverform').scrollIntoView({behavior: 'smooth'});
 }
 
+//Called by Delete driver button in the table, prompts user to confirm deletion.
+//Creates a model with the given title, body, button text and button function.
 function runModal(title, body, buttonText, buttonFunction){
 
     $('#ModalLabel').text(title); 
@@ -343,7 +362,6 @@ function runModal(title, body, buttonText, buttonFunction){
     $("#ModalConfirmButton").text(buttonText);
 
     $('#Modal').modal('show')
-
 
     $('#Modal').on('shown.bs.modal', function () {
         $('#myInput').trigger('focus')})

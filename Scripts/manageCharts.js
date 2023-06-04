@@ -9,7 +9,6 @@ class ChartContainer {
         this.renderChart();
     }
 
-
     getChartData(filterstate, metricName){
         return new Promise((resolve) => {
             setTimeout(() => {
@@ -36,10 +35,9 @@ class ChartContainer {
     }
 
    async updateChart(){
-
         let returnedData = await this.getChartData(getFilterState(), this.metric);
         
-        if (this.name === "scatterChart"){
+        if (this.name === "scatterChart"){ // Scatter chart has different data structure
             this.chart.data.datasets[0].data = returnedData;
         }else{
             this.chart.data.labels = returnedData[0];
@@ -49,12 +47,15 @@ class ChartContainer {
 
     }
 }
-  
+
+
+//Formats the money values with commas 
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     //https://stackoverflow.com/questions/2901102/how-to-format-a-number-with-commas-as-thousands-separators
 }
 
+//Requests all drivers from the API and returns them as a promise
 function getAllDrivers(filterstate){
     return new Promise((resolve) => {
         setTimeout(() => {
@@ -75,6 +76,7 @@ function getAllDrivers(filterstate){
       });
 }
 
+//Requests financial data from the API and returns them as a promise
 function getFianancialData(filterstate){
     return new Promise((resolve) => {
         setTimeout(() => {
@@ -95,6 +97,8 @@ function getFianancialData(filterstate){
       });
 }
 
+//Requests parsed financial data from the getFianancialData function.
+//Updates the HTML Span elements with the data
 async function updateFinancialData(){
 
     data = await getFianancialData(getFilterState());
@@ -113,6 +117,11 @@ async function updateFinancialData(){
 }
 
 
+//Loops through an array of supported filters.
+//inputId = HTML ID of the input element.
+//metricKey = Key of the metric in the API.
+//If the filter is set, it is added to the filterState object.
+//Filter state is structed to be used as a Data object in a GET request.
 function getFilterState() {
     const inputMetrics = [
         {inputId: "inputGender", metricKey: "Gender"}, 
@@ -136,10 +145,15 @@ function getFilterState() {
     return filterState;
 }
 
+//Global array of chartContainer objects
 let chartObject = [];
 
+//Loops through an array of configured charts.
+//Creates a new chartContainer object for each chart.
+//Calls the updateChart function after all the empty charts are rendered.
 async function renderCharts(){
 
+    //Colours used in segments for pie charts.
     let chartColours = [
         'rgb(255, 99, 132)',  // Red
         'rgb(54, 162, 235)',  // Blue
@@ -382,7 +396,7 @@ async function renderCharts(){
             }],
         },
         options: {
-            //events: [],
+            //events: [], // Disable mouse events
             responsive: false,
             scales: {
                 x: {
@@ -450,8 +464,11 @@ async function renderCharts(){
         }
     }
 
-    
 
+
+    //name = HTML ID of the chart element.
+    //metric = Key of the metric in the API.
+    //config = Chart configuration object.
     const charts = [
         { name: "professionsChart", metric:"Occupation", config: professionsChartConfig },
         { name: "penaltyPointChart", metric:"MVR_PTS", config: penaltyPointConfiguration },
@@ -475,11 +492,19 @@ async function renderCharts(){
 
 }
 
+//Called on first page load when empty charts are render.
+//Called afer filter change to update charts.
+//Changes the result returned count to LOADING.
+//Gets the current filter state.
+//Waits for all synchronous functions to complete. These include each chart individually updating and updating financial data.
+//Updates the result returned count.
 async function updateCharts() {
 
     $("#resultCount").text("LOADING...");
     filterstate = getFilterState();
     
+    //I'm not sure I'm using this right as not all the functions return a promise but it seems to work.
+    //Looking into this would be a good place to start performance optimisation.
     await Promise.all([
         updateFinancialData(),
         data = await getAllDrivers(filterstate),

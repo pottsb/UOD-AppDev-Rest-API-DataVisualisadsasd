@@ -1,5 +1,7 @@
 <?php
 
+//Used when the edit driver  and new driver form is submitted.
+//Creates a new Driver object from the JSON string passed in the request body.
 function extractDriverFromJSON($requestBody)
 {
     $driverArray = json_decode($requestBody, true);

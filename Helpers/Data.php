@@ -1,5 +1,8 @@
 <?php
 
+// Requires the paramiters passed in the GET request and the array of drivers.
+// Checks if any of the supported keys are in the paramiters array.
+// If they are, it filters the drivers array by the value of the key.
 function filterResults($parameters, $driverArray)
 {
     $supportedKeys = [
@@ -23,7 +26,11 @@ function filterResults($parameters, $driverArray)
     return array_values($driverArray);
 }
 
-function getMetric($metric, $filteredResults){
+//Requires the metric of interest and a driver array.
+//Removes all metrics apart from the metric of interest from the driver objects.
+//Sorts the array by the metric of interest.
+//Sorting supports strings and numbers.
+function pruneResults($metric, $filteredResults){
 
     foreach ($filteredResults as $key => &$driver) {
         foreach (get_object_vars($driver) as $driverMetricKey => $value) {
@@ -47,6 +54,13 @@ function getMetric($metric, $filteredResults){
     return $filteredResults;
 }
 
+//Requires the metric of interest and a driver array.
+//Formats the data into a format that the chart.js library can use for graphs.
+//Returns an array of keys and a count of the number of times they appear in the array.
+//Checks if the metric is in the key array yet.
+//If it does, it increments the count of the key in the metricCount array.
+//If it doesn't, it adds the key to the key array and pushes 1 into the metricCount array.
+//Data should already be sorted before this function is called.
 function formatChartData($metric, $drivers)
 {
     $keys = array();
@@ -71,7 +85,9 @@ function formatChartData($metric, $drivers)
     return array($keys, $metricCount);
 }
 
-
+//Requires the two metrics of interest and a driver array.
+//Formats the data into a format that the chart.js library can use for plots.
+//Adds the metrics for each driver into an array as an X and Y coordinate.
 function formatScatterData($drivers, $metric1, $metric2)
 {
     $data = [];
@@ -91,8 +107,10 @@ function formatScatterData($drivers, $metric1, $metric2)
     return $data;
 }
 
+//Requires a driver array.
+//This is hard coded and always returns max, min and average for the financial metrics.
+//Data should have already been filtered before this function is called.
 function formatFianancialData($drivers){
-
 
     $IncomeArray = [];
     $OldClaimArray = [];

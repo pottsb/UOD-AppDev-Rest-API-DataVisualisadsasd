@@ -1,60 +1,9 @@
 <?php
 
-// Base class for a RESTful web service.  Inherit from this class and override the performXXX
-// methods to perform the functionality you require.
-
-// This class was originally based on source code taken from http://blog.garethj.com/2009/02/17/building-a-restful-web-application-with-php/.
-// However, it has been substantially modified now to work with different rewrite rules and
-// to handle parameters correctly.
-//
-// This class relies on URL rewrite rules in the appropriate config file (.htaccess for Apache, web.config for IIS).  These map a URL
-// in the form http://server/x/y/x in to the form http://server/api.php?q=x/y/z.  
-//
-// To do this, the following rules need to be inserted in the appropriate files:
-//
-// .htaccess:
-//
-// RewriteEngine on
-// RewriteCond %{REQUEST_FILENAME} !-f
-// RewriteCond %{REQUEST_FILENAME} !-d
-// RewriteCond %{REQUEST_URI} !=/favicon.ico
-// RewriteRule ^(.*)$ api.php?q=$1 [L,QSA]
-//
-// web.config:
-// <system.webServer>
-//   <rewrite>
-//     <rules>
-//       <rule name="Imported Rule" stopProcessing="true">
-//         <match url="^(.*)$" ignoreCase="false" />
-//         <conditions>
-//           <add input="{REQUEST_FILENAME}" matchType="IsFile" ignoreCase="false" negate="true" />
-//           <add input="{REQUEST_FILENAME}" matchType="IsDirectory" ignoreCase="false" negate="true" />
-//           <add input="{URL}" pattern="^/favicon.ico$" ignoreCase="false" negate="true" />
-//         </conditions>
-//         <action type="Rewrite" url="api.php?q={R:1}" appendQueryString="true" />
-//       </rule>
-//     </rules>
-//   </rewrite>
-// </system.webServer>
-//
-// Feel free to use this code as you wish. 
-//
-// Wayne Rippin. Originally created: 26/3/14. 
-//
-// Last updated: 21/3/2019 to replace original file storage with use of MySQL
-
 class RestService 
 {
     private $supportedMethods;
     private $apiStringToMatch;
-
-    // The parameter to the constructor should be a string that matches
-    // the first parameter of any request (i.e. the root of
-    // the URLs used by the API). Any call to the service
-    // will be compared against this and if it does not match,
-    // the call will be rejected.
-    //
-    // If you don't want this to happen, pass in an empty string.
 
     public function __construct($apiStringToMatch) 
     {
@@ -67,15 +16,11 @@ class RestService
 		$url = $this->getFullUrl();
 		$method = $_SERVER['REQUEST_METHOD'];
 		$requestBody = file_get_contents('php://input');
-		// Look for any parameters appended to the URL in the form
-		// "q=xyz".  These will be the parameters that determine which
-		// functions are used for each HTTP method.  For example, a URL 
-		// In the form q=books/x/y will see 'books', 'x' and 'y' placed 
-		// in the first three elements of the array $parameters
-		//
+
 		if (isset($_GET['q']))
 		{
-			$requestLocation = explode("/", $_GET['q']);
+			//Get's the original request location now a paramiter after being parsed by the rewrite rule
+			$requestLocation = explode("/", $_GET['q']); 
 			$parameters = $_GET;
 			unset($parameters['q']);
 			if (strlen($this->apiStringToMatch) > 0 && count($requestLocation) > 0)
